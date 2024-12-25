@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import Header from './components/Header.jsx'
 import Main from './components/Main.jsx'
@@ -44,6 +44,13 @@ function App() {
   const [ingredients, setIngredients] = useState([''])
   
   const [recipe, setRecipe] = useState('')
+  const recipeSection = useRef(null)
+
+  useEffect(() => {
+    if (recipe !== '' && recipeSection.current !== null) {
+      recipeSection.current.scrollIntoView({behavior: 'smooth'})
+    }
+  }, [recipe])
 
   async function getRecipe () {
     const recipeMarkdown = await getRecipeFromMistral(ingredients)
@@ -56,7 +63,8 @@ function App() {
       <Main addIngredient={addIngredient}/>
       {ingredients.length > 0 && <IngredientsList 
         ingredients={ingredients}
-        getRecipe={getRecipe} />}
+        getRecipe={getRecipe}
+        ref={recipeSection} />}
       {recipe && <ClaudeRecipe 
         recipe={recipe}/>}
     </>
